@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 import seaborn as sn
 import pandas as pd
 from models import sock2mocap_conv2d
+from dataloader import sample_data
 
 ############################# Arguments #########################
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -71,9 +72,9 @@ shape of each sock =[frames,32,32] This is the reading from the sensor of the so
 shape of data from xsens = [frames,22,3] This is the joint angle data
 The data is sampled at the same rate
 '''
-train_path = 'dataset/train.p' 
-val_path = 'dataset/val.p'
-test_path = 'dataset/test.p'
+train_path = '../../dataset/train.p' 
+val_path = '../../dataset/val.p'
+test_path = '../../dataset/test.p'
 
 train_files = pickle.load( open( train_path, "rb" ) )
 val_files = pickle.load( open( val_path, "rb" ) )
@@ -87,21 +88,24 @@ if not(args.all):
 
 train_files[2][np.isnan(train_files[2])] = 0
 
-train_dataset = sample_data(train_files)
-val_dataset = sample_data(val_files)
-test_dataset = sample_data(test_files)
 
-print(len(train_dataset), len(val_dataset), len(test_dataset))
+train_dataset = sample_data(train_files, args.subsample, args.window)
+val_dataset = sample_data(val_files, args.subsample, args.window)
+test_dataset = sample_data(test_files, args.subsample, args.window)
+
+# print(len(train_dataset), len(val_dataset), len(test_dataset))
 
 train_dataloader = DataLoader(train_dataset, batch_size=args.batch_size,
-                        shuffle=not(args.test), num_workers=4)
+                        shuffle=not(args.test))
 
 val_dataloader = DataLoader(val_dataset, batch_size=args.batch_size,
-                        shuffle=True, num_workers=4)
+                        shuffle=True)
 
 test_dataloader = DataLoader(test_dataset, batch_size=1,
-                        shuffle=False, num_workers=4)
+                        shuffle=False)
 
+# examples = enumerate(train_dataloader)
+# dx = next(examples)
 
 ############################ Training Code #####################
 
@@ -109,7 +113,7 @@ if __name__ == '__main__':
     np.random.seed(0)
     torch.manual_seed(0)
 
-    seq = sock2mocap_conv2d(symmetric=False,args.window)
+    seq = sock2mocap_conv2d(args.window, symmetric=False)
     seq.cuda()
     seq = nn.DataParallel(seq)
     optimizer = optim.Adam(seq.parameters(), lr=args.lr, weight_decay=args.weightdecay)

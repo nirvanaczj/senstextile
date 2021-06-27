@@ -13,7 +13,7 @@ from torchvision import datasets, models, transforms
 import math
 import shutil
 
-def window_select(data,timestep,window):
+def window_select(data,timestep,window):    
     if window ==0:
         return data[timestep : timestep + 1, :, :]
     max_len = data.shape[0]

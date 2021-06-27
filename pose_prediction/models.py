@@ -11,10 +11,10 @@ import math
 ############################ Model #############################
 
 class sock2mocap_conv2d(nn.Module):
-    def __init__(self, symmetric=True,window_size):
+    def __init__(self, window_size,symmetric=True):
         super(sock2mocap_conv2d, self).__init__()
     
-        if args.window == 0:
+        if window_size == 0:
             self.conv1=nn.Conv2d(1,16,kernel_size=(3,3))
         else:
             self.conv1=nn.Conv2d(2*window_size,16,kernel_size=(3,3))
@@ -24,10 +24,10 @@ class sock2mocap_conv2d(nn.Module):
         self.maxpool2=nn.MaxPool2d(kernel_size=3)
         self.symmetric = symmetric
         if not symmetric:
-            if args.window == 0:
+            if window_size == 0:
                 self.conv1_r=nn.Conv2d(1,16,kernel_size=(3,3))
             else:
-                self.conv1_r=nn.Conv2d(window_size,16,kernel_size=(3,3))
+                self.conv1_r=nn.Conv2d(2*window_size,16,kernel_size=(3,3))
             self.conv2_r = nn.Conv2d(16,8,kernel_size=(3,3))
             
         self.linear1 = nn.Linear(64,100)
@@ -44,10 +44,8 @@ class sock2mocap_conv2d(nn.Module):
         else:
             out_r=self.maxpool1(self.relu(self.conv1_r(input_r)))
             out_r=self.maxpool2(self.relu(self.conv2_r(out_r)))
-
         out_l=out_l.reshape(out_l.shape[0],-1)
         out_r=out_r.reshape(out_r.shape[0],-1)
-        
         i0 = torch.cat((out_l,out_r),axis=1)
         i1 = self.relu(self.linear1(i0))
         i2 = self.relu(self.linear_extra(i1))
