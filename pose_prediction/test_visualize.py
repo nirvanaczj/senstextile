@@ -8,14 +8,13 @@ import pickle
 from fractions import gcd
 import math
 import random
-import transformations
+import utils.transformations
 from opendr.renderer import ColoredRenderer
 from opendr.lighting import LambertianPointLight
 from opendr.camera import ProjectPoints
-from serialization import load_model
+from smpl.serialization import load_model
 import h5py
 import cv2
-import transformations
 
 ## Load SMPL model (here we load the female model)
 m = load_model('models/basicmodel_m_lbs_10_207_0_v1.0.0.pkl')

@@ -26,9 +26,9 @@ import numpy as np
 import pickle
 import chumpy as ch
 from chumpy.ch import MatVecMult
-from verts import verts_core
-from posemapper import posemap
-    
+from smpl.verts import verts_core
+from smpl.posemapper import posemap
+
 def save_model(model, fname):
     m0 = model
     trainer_dict = {'v_template': np.asarray(m0.v_template),'J': np.asarray(m0.J),'weights': np.asarray(m0.weights),'kintree_table': m0.kintree_table,'f': m0.f, 'bs_type': m0.bs_type, 'posedirs': np.asarray(m0.posedirs)}    
