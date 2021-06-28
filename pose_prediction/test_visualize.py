@@ -17,7 +17,7 @@ import h5py
 import cv2
 
 ## Load SMPL model (here we load the female model)
-m = load_model('models/basicmodel_m_lbs_10_207_0_v1.0.0.pkl')
+m = load_model('smpl/models/basicmodel_m_lbs_10_207_0_v1.0.0.pkl')
 import pickle
 import numpy as np
 import os
@@ -31,11 +31,11 @@ os.mkdir('VISUALIZATION/'+expmtname+'/OUTPUT/')
 os.mkdir('VISUALIZATION/'+expmtname+'/TOGETHER/')
 
 
-gt = pickle.load( open( 'dataset/test.p', "rb" ) )
+gt = pickle.load( open( '../../dataset/test.p', "rb" ) )
 
     
-pred = pickle.load(open('results/preds.p',"rb"))
-input_ = pickle.load(open('results/inputs.p',"rb"))
+pred = pickle.load(open('../../results/final_preds.p',"rb"))
+input_ = pickle.load(open('../../results/final_inputs.p',"rb"))
 
 predictions = np.array(pred)[:,0,:]
 input_passed = np.array(input_)[:,0,:]
